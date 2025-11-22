@@ -5,7 +5,7 @@ const isProduction = import.meta.env.PROD; // Use PROD instead of MODE === "prod
 
 // Backend base URL — use localhost in dev, render URL in production
 export const BASE_URL = isProduction
-  ? "https://jobportal-yt-main-3.onrender.com"
+  ? "https://jobportal-059k.onrender.com"
   : "http://localhost:8000";
 
 // API endpoints
