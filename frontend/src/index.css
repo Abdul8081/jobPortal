@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  /* Theme Variables */
+  [data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --border-color: #e5e7eb;
+    --accent-primary: #7c3aed;
+    --accent-secondary: #2563eb;
+  }
+
+  [data-theme="dark"] {
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --border-color: #4b5563;
+    --accent-primary: #7c3aed;
+    --accent-secondary: #2563eb;
+  }
+
+  [data-theme="aqua"] {
+    --bg-primary: #b2e4e8;
+    --bg-secondary: #00c1d4;
+    --bg-tertiary: #007a87;
+    --text-primary: #004a55;
+    --text-secondary: #006472;
+    --text-tertiary: #00899b;
+    --border-color: #00899b;
+    --accent-primary: #ff6f61;
+    --accent-secondary: #ff8a80;
+  }
+
+  [data-theme="retro"] {
+    --bg-primary: #fff3e0;
+    --bg-secondary: #ffcc80;
+    --bg-tertiary: #ffab40;
+    --text-primary: #6d4c41;
+    --text-secondary: #5d4037;
+    --text-tertiary: #8d6e63;
+    --border-color: #ffab40;
+    --accent-primary: #ffab40;
+    --accent-secondary: #ff9100;
+  }
+
+  /* Apply theme variables to elements */
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  * {
+    @apply border-border;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Input placeholders */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.6;
+  }
+
+  /* Scrollbar styling for themed experience */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
+}
+
+@layer utilities {
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+  .transform-style-preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-in;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
