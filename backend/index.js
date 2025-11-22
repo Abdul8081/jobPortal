@@ -22,7 +22,7 @@ app.use(cookieParser());
 // CORS whitelist — include localhost for dev + your production origin
 const whitelist = [
   "http://localhost:5173", // dev frontend
-  "https://jobportal-yt-main-3.onrender.com" // production frontend
+  "https://jobportal-059k.onrender.com" // production frontend
 ];
 
 const corsOptions = {
