@@ -55,6 +55,10 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.join(frontendDistPath, "index.html"));
   });
+} else {
+  app.get("/", (req, res) => {
+    res.json({ message: "API is running. Frontend should be served separately in development." });
+  });
 }
 
 // sanity check for DB URI (fail fast with a helpful message)
