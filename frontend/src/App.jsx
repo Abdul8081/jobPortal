@@ -17,6 +17,7 @@ import ProtectedRoute from './components/admin/ProtectedRoute'
 import RequireAuth from './components/auth/RequireAuth'
 import LandingPage from './components/LandingPage'
 import ThemeMenu from './components/shared/ThemeMenu'
+import Membership from './components/membership/Membership'
 
 const appRouter = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const appRouter = createBrowserRouter([
   {
     path: "/profile",
     element: <RequireAuth><Profile /></RequireAuth>  // Protected
+  },
+  {
+    path: "/membership",
+    element: <RequireAuth><Membership /></RequireAuth>  // Protected
   },
   // admin routes - use ProtectedRoute for role-based protection
   {

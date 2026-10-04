@@ -47,6 +47,14 @@ const jobSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Application',
         }
-    ]
+    ],
+    isPremium: {
+        type: Boolean,
+        default: false
+    },
+    isActivelyHiring: {
+        type: Boolean,
+        default: false
+    }
 },{timestamps:true});
 export const Job = mongoose.model("Job", jobSchema);

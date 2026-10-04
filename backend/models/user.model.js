@@ -42,5 +42,28 @@ const userSchema = new mongoose.Schema({
             default:""
         }
     },
+    membership: {
+        isPremium: {
+            type: Boolean,
+            default: false
+        },
+        plan: {
+            type: String,
+            enum: ['monthly', 'quarterly', 'annual', 'none'],
+            default: 'none'
+        },
+        startDate: {
+            type: Date
+        },
+        expiresAt: {
+            type: Date
+        },
+        razorpayOrderId: {
+            type: String
+        },
+        razorpayPaymentId: {
+            type: String
+        }
+    }
 },{timestamps:true});
 export const User = mongoose.model('User', userSchema);

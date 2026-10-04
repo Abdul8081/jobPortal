@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Button } from '../ui/button'
 import { Avatar, AvatarImage } from '../ui/avatar'
-import { LogOut, User2, Menu, X } from 'lucide-react'
+import { LogOut, User2, Menu, X, Crown, Sparkles } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
@@ -135,6 +135,19 @@ const Navbar = () => {
                                             Browse
                                         </button>
                                     </li>
+                                    <li>
+                                        <Link
+                                            to={user ? "/membership" : "/login"}
+                                            className={`transition-all hover:opacity-80 text-sm lg:text-base flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
+                                                user?.membership?.isPremium 
+                                                    ? 'bg-amber-400/10 text-amber-400 border-amber-400/30 font-semibold' 
+                                                    : 'bg-purple-600/10 text-purple-400 border-purple-500/30 hover:bg-purple-600/20'
+                                            } ${isActive('/membership') ? 'ring-2 ring-purple-500' : ''}`}
+                                        >
+                                            <Crown className={`h-3.5 w-3.5 ${user?.membership?.isPremium ? 'text-amber-400 fill-amber-400' : 'text-purple-400'}`} />
+                                            <span>{user?.membership?.isPremium ? 'Premium PRO' : 'Membership'}</span>
+                                        </Link>
+                                    </li>
                                 </>
                             )
                         }
@@ -173,12 +186,19 @@ const Navbar = () => {
                                                 <AvatarImage src={user?.profile?.profilePhoto} alt={user?.fullname} />
                                             </Avatar>
                                             <div className="flex-1 min-w-0">
-                                                <h4
-                                                    className='font-medium truncate text-sm sm:text-base'
-                                                    style={{ color: 'var(--text-primary)' }}
-                                                >
-                                                    {user?.fullname}
-                                                </h4>
+                                                <div className="flex items-center gap-1.5">
+                                                    <h4
+                                                        className='font-medium truncate text-sm sm:text-base'
+                                                        style={{ color: 'var(--text-primary)' }}
+                                                    >
+                                                        {user?.fullname}
+                                                    </h4>
+                                                    {user?.role !== 'recruiter' && user?.membership?.isPremium && (
+                                                        <span className="text-[10px] bg-amber-400/20 text-amber-400 font-bold px-1.5 py-0.5 rounded">
+                                                            PRO
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p
                                                     className='text-xs sm:text-sm line-clamp-2 mt-0.5'
                                                     style={{ color: 'var(--text-secondary)' }}
@@ -200,6 +220,16 @@ const Navbar = () => {
                                                     </Link>
                                                 )
                                             }
+                                            {user && user.role !== 'recruiter' && (
+                                                <Link
+                                                    to="/membership"
+                                                    className='flex items-center gap-2 px-2 py-2 rounded-md transition-all hover:bg-opacity-10 hover:bg-purple-600'
+                                                    style={{ color: 'var(--text-primary)' }}
+                                                >
+                                                    <Crown className="h-4 w-4 text-amber-400" />
+                                                    <span className="text-sm">{user?.membership?.isPremium ? 'Manage Membership' : 'Upgrade to Premium'}</span>
+                                                </Link>
+                                            )}
                                             <button
                                                 onClick={logoutHandler}
                                                 className='flex items-center gap-2 px-2 py-2 rounded-md transition-all w-full text-left hover:bg-opacity-10 hover:bg-red-600'
@@ -345,6 +375,16 @@ const Navbar = () => {
                                     >
                                         Browse
                                     </button>
+                                    <Link
+                                        to={user ? "/membership" : "/login"}
+                                        className={`block py-3 px-3 rounded-md transition-all active:bg-opacity-10 active:bg-purple-600 text-sm xs:text-base min-h-[44px] flex items-center gap-2 ${
+                                            user?.membership?.isPremium ? 'text-amber-400 font-semibold' : 'text-purple-400 font-medium'
+                                        } ${isActive('/membership') ? 'font-bold bg-purple-600 bg-opacity-10' : ''}`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Crown className="w-4 h-4" />
+                                        <span>{user?.membership?.isPremium ? 'Active Membership (PRO)' : 'Premium Membership'}</span>
+                                    </Link>
                                 </>
                             )
                         }
