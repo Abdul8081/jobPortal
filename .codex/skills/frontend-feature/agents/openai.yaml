@@ -1,0 +1,3 @@
+interface:
+  display_name: "Frontend Feature"
+  short_description: "Build React job-portal features"
