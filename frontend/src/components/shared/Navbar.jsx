@@ -189,7 +189,7 @@ const Navbar = () => {
                                         </div>
                                         <div className='flex flex-col my-3 gap-1'>
                                             {
-                                                user && user.role === 'student' && (
+                                                user && (
                                                     <Link
                                                         to="/profile"
                                                         className='flex items-center gap-2 px-2 py-2 rounded-md transition-all hover:bg-opacity-10 hover:bg-purple-600'
@@ -255,7 +255,7 @@ const Navbar = () => {
                                     </div>
                                     <div className='flex flex-col my-2 xs:my-3 gap-1'>
                                         {
-                                            user && user.role === 'student' && (
+                                            user && (
                                                 <Link
                                                     to="/profile"
                                                     onClick={() => setMobileMenuOpen(false)}

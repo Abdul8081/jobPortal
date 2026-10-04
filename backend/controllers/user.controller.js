@@ -245,6 +245,76 @@ export const updateProfile = async (req, res) => {
     }
 };
 
+// Upload / Update Profile Photo
+export const updateProfilePhoto = async (req, res) => {
+    try {
+        const file = req.file;
+        if (!file) {
+            return res.status(400).json({
+                message: "Please select an image file to upload.",
+                success: false
+            });
+        }
+
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        const fileExtension = file.originalname.split('.').pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            return res.status(400).json({
+                message: "Only image files (JPG, PNG, WEBP, GIF) are allowed.",
+                success: false
+            });
+        }
+
+        const fileUri = getDataUri(file);
+        if (!fileUri || (!fileUri.content && typeof fileUri !== "string")) {
+            return res.status(500).json({ message: "Failed to parse image file for upload.", success: false });
+        }
+
+        const cloudResponse = await cloudinary.uploader.upload(
+            (typeof fileUri === "string" ? fileUri : fileUri.content),
+            {
+                folder: 'profile_photos',
+                resource_type: 'image',
+                transformation: [
+                    { width: 500, height: 500, crop: 'limit' },
+                    { quality: 'auto' }
+                ]
+            }
+        );
+
+        const userId = req.id || req.user?._id;
+        const foundUser = await User.findById(userId);
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found.", success: false });
+        }
+
+        foundUser.profile = foundUser.profile || {};
+        foundUser.profile.profilePhoto = cloudResponse.secure_url;
+        await foundUser.save();
+
+        const userResponse = {
+            _id: foundUser._id,
+            fullname: foundUser.fullname,
+            email: foundUser.email,
+            phoneNumber: foundUser.phoneNumber,
+            role: foundUser.role,
+            profile: foundUser.profile
+        };
+
+        return res.status(200).json({
+            message: "Profile photo updated successfully.",
+            user: userResponse,
+            success: true
+        });
+    } catch (error) {
+        console.error("Profile photo update error:", error);
+        return res.status(500).json({
+            message: "Failed to update profile photo.",
+            success: false
+        });
+    }
+};
+
 // Google OAuth Login / Signup
 export const googleLogin = async (req, res) => {
     try {
