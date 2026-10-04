@@ -2,7 +2,7 @@ import React from 'react'
 import { Badge } from './ui/badge'
 import { useNavigate } from 'react-router-dom'
 import TiltCard from './ui/TiltCard'
-import { MapPin, Briefcase, DollarSign } from 'lucide-react'
+import { MapPin, Briefcase, DollarSign, Crown, Flame } from 'lucide-react'
 
 const LatestJobCards = ({job}) => {
     const navigate = useNavigate();
@@ -19,19 +19,35 @@ const LatestJobCards = ({job}) => {
                 className='p-3 xs:p-4 sm:p-5 md:p-6 flex flex-col h-full'
             >
                 {/* Company Info */}
-                <div className="mb-2 sm:mb-3 md:mb-4">
-                    <h1 
-                        className='font-semibold text-sm xs:text-base sm:text-lg md:text-xl truncate'
-                        style={{ color: 'var(--text-primary)' }}
-                    >
-                        {job?.company?.name}
-                    </h1>
-                    <div 
-                        className="flex items-center gap-1 text-xs sm:text-sm md:text-base mt-0.5 sm:mt-1"
-                        style={{ color: 'var(--text-secondary)' }}
-                    >
-                        <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 flex-shrink-0" style={{ color: 'var(--text-secondary)' }} />
-                        <span className="truncate">{job?.location || 'India'}</span>
+                <div className="mb-2 sm:mb-3 md:mb-4 flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                        <h1 
+                            className='font-semibold text-sm xs:text-base sm:text-lg md:text-xl truncate'
+                            style={{ color: 'var(--text-primary)' }}
+                        >
+                            {job?.company?.name}
+                        </h1>
+                        <div 
+                            className="flex items-center gap-1 text-xs sm:text-sm md:text-base mt-0.5 sm:mt-1"
+                            style={{ color: 'var(--text-secondary)' }}
+                        >
+                            <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 flex-shrink-0" style={{ color: 'var(--text-secondary)' }} />
+                            <span className="truncate">{job?.location || 'India'}</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                        {job?.isActivelyHiring && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/30">
+                                <Flame className="w-2.5 h-2.5 fill-orange-400" />
+                                Hiring
+                            </span>
+                        )}
+                        {job?.isPremium && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30">
+                                <Crown className="w-2.5 h-2.5 fill-amber-400" />
+                                PRO
+                            </span>
+                        )}
                     </div>
                 </div>
                 

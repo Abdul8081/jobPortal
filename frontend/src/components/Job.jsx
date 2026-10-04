@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from './ui/button'
-import { Bookmark, MapPin, Briefcase, DollarSign } from 'lucide-react'
+import { Bookmark, MapPin, Briefcase, DollarSign, Crown, Flame } from 'lucide-react'
 import { Avatar, AvatarImage } from './ui/avatar'
 import { Badge } from './ui/badge'
 import { useNavigate } from 'react-router-dom'
@@ -25,14 +25,28 @@ const Job = ({job}) => {
             }}
         >
             <div className='p-3 xs:p-4 sm:p-5 md:p-6 flex flex-col h-full'>
-                {/* Header: Date and Bookmark */}
-                <div className='flex items-center justify-between mb-3 xs:mb-3.5 sm:mb-4'>
-                    <p 
-                        className='text-xs xs:text-sm sm:text-base font-medium'
-                        style={{ color: 'var(--text-secondary)' }}
-                    >
-                        {daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}
-                    </p>
+                {/* Header: Date, Badges and Bookmark */}
+                <div className='flex items-center justify-between gap-2 mb-3 xs:mb-3.5 sm:mb-4'>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                        <p 
+                            className='text-xs xs:text-sm sm:text-base font-medium'
+                            style={{ color: 'var(--text-secondary)' }}
+                        >
+                            {daysAgoFunction(job?.createdAt) === 0 ? "Today" : `${daysAgoFunction(job?.createdAt)} days ago`}
+                        </p>
+                        {job?.isActivelyHiring && (
+                            <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/30">
+                                <Flame className="w-3 h-3 fill-orange-400" />
+                                Actively Hiring
+                            </span>
+                        )}
+                        {job?.isPremium && (
+                            <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/30">
+                                <Crown className="w-3 h-3 fill-amber-400" />
+                                Premium
+                            </span>
+                        )}
+                    </div>
                     <Button 
                         variant="outline" 
                         className="rounded-full min-h-[36px] min-w-[36px] h-9 w-9 sm:h-10 sm:w-10 p-0 hover:bg-opacity-10 hover:bg-purple-600 transition-all active:scale-95" 
