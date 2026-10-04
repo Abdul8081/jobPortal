@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
+import { OAuth2Client } from "google-auth-library";
 
 export const register = async (req, res) => {
     try {
@@ -40,7 +41,7 @@ export const register = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.create({
+        const newUser = await User.create({
             fullname,
             email,
             phoneNumber,
@@ -51,10 +52,26 @@ export const register = async (req, res) => {
             }
         });
 
-        return res.status(201).json({
-            message: "Account created successfully.",
-            success: true
-        });
+        // Auto-login: generate JWT and set cookie (same as login)
+        const tokenData = { userId: newUser._id };
+        const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+        const user = {
+            _id: newUser._id,
+            fullname: newUser.fullname,
+            email: newUser.email,
+            phoneNumber: newUser.phoneNumber,
+            role: newUser.role,
+            profile: newUser.profile
+        };
+
+        return res.status(201)
+            .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' })
+            .json({
+                message: "Account created successfully.",
+                user,
+                success: true
+            });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -346,4 +363,92 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// Google OAuth Login / Signup
+export const googleLogin = async (req, res) => {
+    try {
+        const { credential, role } = req.body;
+
+        if (!credential) {
+            return res.status(400).json({
+                message: "Google credential is required.",
+                success: false
+            });
+        }
+
+        if (!role) {
+            return res.status(400).json({
+                message: "Please select a role (Student or Recruiter).",
+                success: false
+            });
+        }
+
+        // Verify the Google ID token
+        const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+
+        const { sub: googleId, email, name, picture } = payload;
+
+        // Check if user already exists
+        let user = await User.findOne({ email });
+
+        if (user) {
+            // Existing user — check role match
+            if (role !== user.role) {
+                return res.status(400).json({
+                    message: "Account doesn't exist with current role.",
+                    success: false
+                });
+            }
+            // Update googleId if not set
+            if (!user.googleId) {
+                user.googleId = googleId;
+                user.provider = 'google';
+                await user.save();
+            }
+        } else {
+            // New user — create account
+            user = await User.create({
+                fullname: name,
+                email,
+                role,
+                googleId,
+                provider: 'google',
+                profile: {
+                    profilePhoto: picture || "",
+                }
+            });
+        }
+
+        // Generate JWT
+        const tokenData = { userId: user._id };
+        const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+        const userData = {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        };
+
+        return res.status(200)
+            .cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' })
+            .json({
+                message: `Welcome ${user.fullname}`,
+                user: userData,
+                success: true
+            });
+    } catch (error) {
+        console.error("Google login error:", error);
+        return res.status(500).json({
+            message: "Google authentication failed.",
+            success: false
+        });
+    }
+};
 

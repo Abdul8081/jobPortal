@@ -12,16 +12,24 @@ const userSchema = new mongoose.Schema({
     },
     phoneNumber: {
         type: Number,
-        required: true
     },
     password:{
         type:String,
-        required:true,
     },
     role:{
         type:String,
         enum:['student','recruiter'],
         required:true
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true  // allows multiple null values (for non-Google users)
+    },
+    provider: {
+        type: String,
+        enum: ['local', 'google'],
+        default: 'local'
     },
     profile:{
         bio:{type:String},
