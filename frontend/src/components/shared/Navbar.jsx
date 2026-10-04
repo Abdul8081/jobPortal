@@ -193,7 +193,7 @@ const Navbar = () => {
                                                     >
                                                         {user?.fullname}
                                                     </h4>
-                                                    {user?.membership?.isPremium && (
+                                                    {user?.role !== 'recruiter' && user?.membership?.isPremium && (
                                                         <span className="text-[10px] bg-amber-400/20 text-amber-400 font-bold px-1.5 py-0.5 rounded">
                                                             PRO
                                                         </span>
@@ -220,14 +220,16 @@ const Navbar = () => {
                                                     </Link>
                                                 )
                                             }
-                                            <Link
-                                                to="/membership"
-                                                className='flex items-center gap-2 px-2 py-2 rounded-md transition-all hover:bg-opacity-10 hover:bg-purple-600'
-                                                style={{ color: 'var(--text-primary)' }}
-                                            >
-                                                <Crown className="h-4 w-4 text-amber-400" />
-                                                <span className="text-sm">{user?.membership?.isPremium ? 'Manage Membership' : 'Upgrade to Premium'}</span>
-                                            </Link>
+                                            {user && user.role !== 'recruiter' && (
+                                                <Link
+                                                    to="/membership"
+                                                    className='flex items-center gap-2 px-2 py-2 rounded-md transition-all hover:bg-opacity-10 hover:bg-purple-600'
+                                                    style={{ color: 'var(--text-primary)' }}
+                                                >
+                                                    <Crown className="h-4 w-4 text-amber-400" />
+                                                    <span className="text-sm">{user?.membership?.isPremium ? 'Manage Membership' : 'Upgrade to Premium'}</span>
+                                                </Link>
+                                            )}
                                             <button
                                                 onClick={logoutHandler}
                                                 className='flex items-center gap-2 px-2 py-2 rounded-md transition-all w-full text-left hover:bg-opacity-10 hover:bg-red-600'

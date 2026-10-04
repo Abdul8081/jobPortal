@@ -84,8 +84,17 @@ const Membership = () => {
     const currentPlan = user?.membership?.plan || 'none';
     const expiresAt = user?.membership?.expiresAt;
 
+    // Redirect recruiter away from membership page
+    useEffect(() => {
+        if (user && user.role === 'recruiter') {
+            toast.info('Premium membership features are available for job seekers only.');
+            navigate('/admin/companies', { replace: true });
+        }
+    }, [user, navigate]);
+
     // Load Razorpay SDK Script
     useEffect(() => {
+        if (user?.role === 'recruiter') return;
         const loadRazorpayScript = () => {
             if (document.getElementById('razorpay-checkout-script')) return;
             const script = document.createElement('script');
@@ -95,10 +104,11 @@ const Membership = () => {
             document.body.appendChild(script);
         };
         loadRazorpayScript();
-    }, []);
+    }, [user]);
 
     // Fetch plans from backend
     useEffect(() => {
+        if (user?.role === 'recruiter') return;
         const fetchPlansAndStatus = async () => {
             try {
                 const res = await axios.get(`${PAYMENT_API_END_POINT}/plans`);
@@ -116,12 +126,17 @@ const Membership = () => {
             }
         };
         fetchPlansAndStatus();
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     const handleSubscribe = async (plan) => {
         if (!user) {
             toast.error('Please login to subscribe to a membership plan.');
             navigate('/login');
+            return;
+        }
+
+        if (user.role === 'recruiter') {
+            toast.error('Recruiters are not eligible to purchase premium membership plans.');
             return;
         }
 
@@ -207,6 +222,10 @@ const Membership = () => {
     };
 
     const activeHiringJobs = allJobs?.filter(j => j.isActivelyHiring || j.isPremium) || [];
+
+    if (user?.role === 'recruiter') {
+        return null;
+    }
 
     return (
         <div 

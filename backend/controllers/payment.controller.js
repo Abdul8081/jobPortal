@@ -87,6 +87,21 @@ export const createOrder = async (req, res) => {
         const { planId } = req.body;
         const userId = req.id;
 
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        if (user.role === 'recruiter') {
+            return res.status(403).json({
+                success: false,
+                message: "Recruiters are not eligible to purchase premium membership plans."
+            });
+        }
+
         if (!planId || !PLANS[planId]) {
             return res.status(400).json({
                 success: false,
@@ -130,6 +145,21 @@ export const verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId } = req.body;
         const userId = req.id;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        if (user.role === 'recruiter') {
+            return res.status(403).json({
+                success: false,
+                message: "Recruiters cannot purchase premium membership plans."
+            });
+        }
 
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !planId) {
             return res.status(400).json({
