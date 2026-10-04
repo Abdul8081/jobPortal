@@ -9,10 +9,19 @@
     "start": "npm start --prefix backend",
     "test-production": "cd backend && NODE_ENV=production npm start"
   },
-  "keywords": ["job-portal", "mern", "react", "nodejs", "mongodb"],
+  "keywords": [
+    "job-portal",
+    "mern",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "google-auth-library": "^11.1.0"
   }
 }

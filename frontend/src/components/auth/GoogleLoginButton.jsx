@@ -14,6 +14,12 @@ const GoogleLoginButton = ({ role }) => {
     const googleBtnRef = useRef(null);
     const [googleLoaded, setGoogleLoaded] = useState(false);
 
+    const roleRef = useRef(role);
+
+    useEffect(() => {
+        roleRef.current = role;
+    }, [role]);
+
     useEffect(() => {
         // Load the Google GSI script
         if (document.getElementById('google-gsi-script')) {
@@ -28,6 +34,25 @@ const GoogleLoginButton = ({ role }) => {
         script.onload = () => setGoogleLoaded(true);
         document.head.appendChild(script);
     }, []);
+
+    const handleGoogleResponse = async (response) => {
+        try {
+            const chosenRole = roleRef.current || 'student';
+            const res = await axios.post(
+                `${USER_API_END_POINT}/google`,
+                { credential: response.credential, role: chosenRole },
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
+            );
+            if (res.data.success) {
+                dispatch(setUser(res.data.user));
+                navigate('/home');
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.error('Google login error:', error);
+            toast.error(error?.response?.data?.message || 'Google sign-in failed.');
+        }
+    };
 
     useEffect(() => {
         if (!googleLoaded || !window.google?.accounts?.id) return;
@@ -48,29 +73,7 @@ const GoogleLoginButton = ({ role }) => {
                 shape: 'rectangular',
             });
         }
-    }, [googleLoaded, role]); // re-render when role changes so callback captures latest role
-
-    const handleGoogleResponse = async (response) => {
-        if (!role) {
-            toast.error('Please select a role (Student or Recruiter) before using Google Sign-In.');
-            return;
-        }
-        try {
-            const res = await axios.post(
-                `${USER_API_END_POINT}/google`,
-                { credential: response.credential, role },
-                { headers: { 'Content-Type': 'application/json' }, withCredentials: true }
-            );
-            if (res.data.success) {
-                dispatch(setUser(res.data.user));
-                navigate('/home');
-                toast.success(res.data.message);
-            }
-        } catch (error) {
-            console.error('Google login error:', error);
-            toast.error(error?.response?.data?.message || 'Google sign-in failed.');
-        }
-    };
+    }, [googleLoaded]);
 
     return (
         <div style={{ width: '100%', marginTop: '8px', marginBottom: '8px' }}>
