@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
 import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const Login = () => {
     const [input, setInput] = useState({
@@ -151,6 +152,7 @@ const Login = () => {
                         </Button> : 
                         <Button type="submit" className="w-full my-4">Login</Button>
                     }
+                    <GoogleLoginButton role={input.role} />
                     <span 
                         className='text-sm'
                         style={{ color: 'var(--text-secondary)' }}

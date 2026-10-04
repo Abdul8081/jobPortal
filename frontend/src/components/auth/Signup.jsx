@@ -9,8 +9,9 @@ import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/redux/authSlice'
+import { setLoading, setUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
+import GoogleLoginButton from './GoogleLoginButton'
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -52,7 +53,8 @@ const Signup = () => {
                 withCredentials: true,
             });
             if (res.data.success) {
-                navigate("/login");
+                dispatch(setUser(res.data.user));
+                navigate("/home");
                 toast.success(res.data.message);
             }
         } catch (error) {
@@ -209,6 +211,7 @@ const Signup = () => {
                         </Button> : 
                         <Button type="submit" className="w-full my-4">Signup</Button>
                     }
+                    <GoogleLoginButton role={input.role} />
                     <span 
                         className='text-sm'
                         style={{ color: 'var(--text-secondary)' }}
