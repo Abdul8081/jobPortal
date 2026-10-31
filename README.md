@@ -611,6 +611,6 @@ For support, email your.email@example.com or open an issue in the GitHub reposit
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Your Name</p>
+  <p>Made with ❤️ by Abdul Muid</p>
   <p>⭐ Star this repo if you find it helpful!</p>
 </div>
